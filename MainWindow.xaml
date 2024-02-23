@@ -1,0 +1,118 @@
+﻿<ui:UiWindow x:Class="ShipThatCode.MainWindow"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        Style="{StaticResource UiWindow}" 
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ShipThatCode"
+        mc:Ignorable="d"
+        Background="{ui:ThemeResource ApplicationBackgroundBrush}"
+        ExtendsContentIntoTitleBar="True"
+        WindowBackdropType="Mica"
+        WindowCornerPreference="Round" 
+        WindowStartupLocation="CenterScreen"
+        Height="600" Width="800" WindowStyle="None" Icon="/icon.ico">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <ui:TitleBar Title="Ship That Code" FontSize="16" Grid.Row="0" Grid.ColumnSpan="2" 
+                     Icon="pack://application:,,,/icon.png"></ui:TitleBar>
+        <Border Grid.Row="1" Padding="10">
+            <Button Content="Add New Profile" Name="btnAddNewProfile" 
+                    Click="btnAddNewProfile_Click">                
+            </Button>
+        </Border>
+        <Border Grid.Row="1" Grid.Column="1" Padding="10">
+            <TextBlock Text="" Name="lblStatus" Foreground="White" 
+                       VerticalAlignment="Center"></TextBlock>
+        </Border>
+        <Border Grid.Row="2" Padding="10">
+            <ListView ItemsSource="{Binding Profiles}" SelectedValue="{Binding ActiveProfile}" 
+                      Name="lvProfiles"
+                      SelectionChanged="ListView_SelectionChanged">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Margin="0,5,0,5" Text="{Binding Title}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Border>
+        <Border Grid.Row="2" Grid.Column="1" Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="15"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                    <ColumnDefinition Width="10"></ColumnDefinition>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Content="Title"></Label>
+                <TextBox Grid.Row="1" Grid.Column="0" Name="txtTitle" Padding="10"
+                         Text="{Binding ActiveProfile.Title, Mode=TwoWay}"></TextBox>
+                <Label Grid.Row="2" Grid.Column="0" Content="Default Install Folder Name"></Label>
+                <TextBox Grid.Row="3" Grid.Column="0" Name="txtDefaultInstallFolderName" Padding="10"
+                         Text="{Binding ActiveProfile.DefaultInstallFolderName, Mode=TwoWay}"></TextBox>
+                <Label Grid.Row="4" Grid.Column="0" Content="Use Updater"></Label>
+                <CheckBox Grid.Row="5" Grid.Column="0" Name="chkUseUpdater" Padding="10"
+                          IsChecked="{Binding ActiveProfile.UseLauncher, Mode=TwoWay}"></CheckBox>
+                <Label Grid.Row="6" Grid.Column="0" Content="Github Owner"></Label>
+                <TextBox Grid.Row="7" Grid.Column="0" Name="txtGithubOwner" Padding="10"
+                         Text="{Binding ActiveProfile.GithubOwner, Mode=TwoWay}"></TextBox>
+                <Label Grid.Row="8" Grid.Column="0" Content="Local Published Bin Path"></Label>
+                <TextBox Grid.Row="9" Grid.Column="0" Name="txtLocalPublishPath" Padding="10"
+                        Text="{Binding ActiveProfile.LocalPublishPath, Mode=TwoWay}"></TextBox>
+                <Label Grid.Row="10" Grid.Column="0" Content="Results Path"></Label>
+                <TextBox Grid.Row="11" Grid.Column="0" Name="txtResultsPath" Padding="10"
+                        Text="{Binding ActiveProfile.ResultsPath, Mode=TwoWay}"></TextBox>
+                <Label Grid.Row="0" Grid.Column="2" Content="Executable File Name"></Label>
+                <TextBox Grid.Row="1" Grid.Column="2" Name="txtExecutableFileName" Padding="10"
+                         Text="{Binding ActiveProfile.ExeFileName, Mode=TwoWay}"></TextBox>
+                <Label Grid.Row="2" Grid.Column="2" Content="Icon Filename"></Label>
+                <TextBox Grid.Row="3" Grid.Column="2" Name="txtIconFilename" Padding="10"
+                         Text="{Binding ActiveProfile.IconFileName, Mode=TwoWay}"></TextBox>
+                <Label Grid.Row="4" Grid.Column="2" Content="Update Zip File Name"></Label>
+                <TextBox Grid.Row="5" Grid.Column="2" Name="txtZipFileName" Padding="10"
+                         Text="{Binding ActiveProfile.ZipName, Mode=TwoWay}"></TextBox>
+                <Label Grid.Row="6" Grid.Column="2" Content="Github Repo"></Label>
+                <TextBox Grid.Row="7" Grid.Column="2" Name="txtGithubRepo" Padding="10"
+                         Text="{Binding ActiveProfile.GithubRepo, Mode=TwoWay}"></TextBox>
+                <Button Grid.Column="2" Grid.Row="9" Content="Browse" Name="btnLocalPubPath"
+                        Click="btnLocalPubPath_Click"></Button>
+                <Button Grid.Column="2" Grid.Row="11" Content="Browse" Name="btnResultsPath"
+                        Click="btnResultsPath_Click"></Button>
+                <Button Grid.Column="0" Grid.Row="13" Content="Save Changes"
+                        Name="btnSaveChanges" Click="btnSaveChanges_Click"></Button>
+                <Button Grid.Column="2" Grid.Row="13" Content="Generate Installer / Update Zip"
+                        HorizontalAlignment="Right"
+                        Name="btnGenerateResults" Click="btnGenerateResults_Click"></Button>
+            </Grid>
+        </Border>
+        <Border Grid.Row="3" Grid.Column="1" Padding="10">
+            <TextBlock Text="" Name="lblResults" Foreground="White" 
+                       VerticalAlignment="Center"></TextBlock>
+        </Border>
+    </Grid>
+</ui:UiWindow>
