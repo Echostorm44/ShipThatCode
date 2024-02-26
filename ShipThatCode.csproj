@@ -19,13 +19,7 @@
     <None Remove="launcher.exe" />
     <None Remove="SetupFiles\appIcon.ico" />
     <None Remove="SetupFiles\backdrop.png" />
-    <None Remove="SetupFiles\D3DCompiler_47_cor3.dll" />
     <None Remove="SetupFiles\EULA.txt" />
-    <None Remove="SetupFiles\PenImc_cor3.dll" />
-    <None Remove="SetupFiles\PresentationNative_cor3.dll" />
-    <None Remove="SetupFiles\setup.exe" />
-    <None Remove="SetupFiles\vcruntime140_cor3.dll" />
-    <None Remove="SetupFiles\wpfgfx_cor3.dll" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,25 +44,7 @@
     <Content Include="SetupFiles\backdrop.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SetupFiles\D3DCompiler_47_cor3.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="SetupFiles\EULA.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SetupFiles\PenImc_cor3.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SetupFiles\PresentationNative_cor3.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SetupFiles\setup.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SetupFiles\vcruntime140_cor3.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SetupFiles\wpfgfx_cor3.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

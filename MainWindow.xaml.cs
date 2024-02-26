@@ -1,7 +1,9 @@
 ﻿using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Windows;
@@ -92,6 +94,15 @@ public partial class MainWindow : UiWindow
         }
     }
 
+    private void btnBackDropPath_Click(object sender, RoutedEventArgs e)
+    {
+        var foo = new OpenFolderDialog();
+        if(foo.ShowDialog().Value)
+        {
+            vm.ActiveProfile.BackdropPath = foo.FolderName;
+        }
+    }
+
     private void btnSaveChanges_Click(object sender, RoutedEventArgs e)
     {
         File.WriteAllText(vm.SettingsPath, JsonSerializer.Serialize(vm.Profiles));
@@ -101,6 +112,84 @@ public partial class MainWindow : UiWindow
 
     private void btnGenerateResults_Click(object sender, RoutedEventArgs e)
     {
+        if(!Directory.Exists(vm.ActiveProfile.LocalPublishPath))
+        {
+            lblStatus.Text = "Local Publish Path does not exist";
+            return;
+        }
+        if(!File.Exists(vm.ActiveProfile.LocalPublishPath + "\\" + vm.ActiveProfile.ExeFileName))
+        {
+            lblStatus.Text = "Exe file does not exist";
+            return;
+        }
+        var publishIconPath = Path.Combine(vm.ActiveProfile.LocalPublishPath, vm.ActiveProfile.IconFileName);
+        if(!File.Exists(publishIconPath) || !vm.ActiveProfile.IconFileName.EndsWith("ico"))
+        {
+            lblStatus.Text = "Icon file does not exist or does not end with ico";
+            return;
+        }
+
+        var installerIconPath = Path.Combine(AppContext.BaseDirectory, "InstallerFiles\\icon.ico");
+        var setupIconPath = Path.Combine(AppContext.BaseDirectory, "SetupFiles\\appIcon.ico");
+        File.Copy(publishIconPath, installerIconPath, true);
+        File.Copy(publishIconPath, setupIconPath, true);
+
+        Directory.CreateDirectory(vm.ActiveProfile.ResultsPath);
+        var config = new SetupSettings
+        {
+            Title = vm.ActiveProfile.Title,
+            DefaultInstallFolderName = vm.ActiveProfile.DefaultInstallFolderName,
+            ExeFileName = vm.ActiveProfile.ExeFileName,
+            IconFileName = vm.ActiveProfile.IconFileName,
+            UseLauncher = vm.ActiveProfile.UseLauncher,
+            GithubOwner = vm.ActiveProfile.GithubOwner,
+            GithubRepo = vm.ActiveProfile.GithubRepo,
+            ZipName = vm.ActiveProfile.ZipName
+        };
+        File.WriteAllText(vm.ActiveProfile.LocalPublishPath + "\\config.json", JsonSerializer.Serialize(config));
+        var launcherPath = Path.Combine(AppContext.BaseDirectory, "launcher.exe");
+        var launcherDest = Path.Combine(vm.ActiveProfile.LocalPublishPath, "launcher.exe");
+        File.Copy(launcherPath, launcherDest);
+        var zipPath = Path.Combine(vm.ActiveProfile.ResultsPath, vm.ActiveProfile.ZipName);
+        ZipFile.CreateFromDirectory(vm.ActiveProfile.LocalPublishPath, zipPath, CompressionLevel.Optimal, true);
+
+        // TODO make sure the new icon && backdrop are copied there first
+        var setupFilesPath = Path.Combine(AppContext.BaseDirectory, "SetupFiles");
+        var sourceDir = new DirectoryInfo(setupFilesPath);
+        var files = sourceDir.GetFiles();
+        foreach(FileInfo file in files)
+        {
+            string targetFilePath = Path.Combine(vm.ActiveProfile.LocalPublishPath, file.Name);
+            file.CopyTo(targetFilePath, true);
+        }
+
+        var payloadZipPath = Path.Combine(AppContext.BaseDirectory, "InstallerFiles\\Payload.zip");
+        ZipFile.CreateFromDirectory(vm.ActiveProfile.LocalPublishPath, payloadZipPath, CompressionLevel.Optimal, true);
+
+        var installerPath = Path.Combine(vm.ActiveProfile.ResultsPath, "installer.exe");
+        var installerFilesPath = Path.Combine(AppContext.BaseDirectory, "InstallerFiles");
+        var installerPublishPath = Path.Combine(AppContext.BaseDirectory, "InstallerFiles\\publishCL");
+        var installerExePath = Path.Combine(AppContext.BaseDirectory, "InstallerFiles\\publishCL\\installer.exe");
+        var publishCmd = "dotnet publish -c Release -r win-x64 -p:PublishReadyToRun=true -f net8.0 -o ./publishCL/ --sc true";
+        var process = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                Arguments = $"/c {publishCmd}",
+                WorkingDirectory = installerFilesPath,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true
+            }
+        };
+        process.Start();
+        process.WaitForExit();
+        File.Move(installerExePath, installerPath);
+        Directory.Delete(installerPublishPath, true);
+        File.Delete(payloadZipPath);
+        ////
+
         // So we need to a bunch of things here.
         // 1. Make a config.json file that contains the settings for the installer && launcher
         //    copy that into the local publish path so it gets picked up into the zip in step 3 && 4
@@ -115,6 +204,8 @@ public partial class MainWindow : UiWindow
         //    dotnet publish -c Release -r win-x64 -p:PublishReadyToRun=true -f net8.0 -o ./publishCL/ --sc true
         //    then copy the contents of the publishCL folder into the ResultsPath which should just be installer.exe
         //    Then we can delete the publishCL folder and the Payload.zip
+        // 5. We've now got both files needed to upload to the github release page, so
+        //    pop open the github page for the repo release page && also open the ResultsPath folder in explorer
     }
 }
 
@@ -203,10 +294,23 @@ public class DeployProfile : INotifyPropertyChanged
             NotifyPropertyChanged();
         }
     }
+    public string BackdropPath { get; set; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
     private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+}
+
+public class SetupSettings
+{
+    public string Title { get; set; }
+    public string DefaultInstallFolderName { get; set; }
+    public string ExeFileName { get; set; }
+    public string IconFileName { get; set; }
+    public bool UseLauncher { get; set; }
+    public string GithubOwner { get; set; }
+    public string GithubRepo { get; set; }
+    public string ZipName { get; set; }
 }

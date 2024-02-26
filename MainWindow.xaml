@@ -61,6 +61,8 @@
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="15"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
@@ -87,10 +89,14 @@
                 <Label Grid.Row="10" Grid.Column="0" Content="Results Path"></Label>
                 <TextBox Grid.Row="11" Grid.Column="0" Name="txtResultsPath" Padding="10"
                         Text="{Binding ActiveProfile.ResultsPath, Mode=TwoWay}"></TextBox>
+                <Label Grid.Row="12" Grid.Column="0" Content="Backdrop Path (1000x500px)"></Label>
+                <TextBox Grid.Row="13" Grid.Column="0" Name="txtBackdropPath" Padding="10"
+                        Text="{Binding ActiveProfile.BackdropPath, Mode=TwoWay}"></TextBox>
                 <Label Grid.Row="0" Grid.Column="2" Content="Executable File Name"></Label>
                 <TextBox Grid.Row="1" Grid.Column="2" Name="txtExecutableFileName" Padding="10"
                          Text="{Binding ActiveProfile.ExeFileName, Mode=TwoWay}"></TextBox>
-                <Label Grid.Row="2" Grid.Column="2" Content="Icon Filename"></Label>
+                <Label Grid.Row="2" Grid.Column="2" 
+                       Content="Icon Filename (proper ico file in publish folder)"></Label>
                 <TextBox Grid.Row="3" Grid.Column="2" Name="txtIconFilename" Padding="10"
                          Text="{Binding ActiveProfile.IconFileName, Mode=TwoWay}"></TextBox>
                 <Label Grid.Row="4" Grid.Column="2" Content="Update Zip File Name"></Label>
@@ -103,9 +109,11 @@
                         Click="btnLocalPubPath_Click"></Button>
                 <Button Grid.Column="2" Grid.Row="11" Content="Browse" Name="btnResultsPath"
                         Click="btnResultsPath_Click"></Button>
-                <Button Grid.Column="0" Grid.Row="13" Content="Save Changes"
+                <Button Grid.Column="2" Grid.Row="13" Content="Browse" Name="btnBackDropPath"
+                        Click="btnBackDropPath_Click"></Button>
+                <Button Grid.Column="0" Grid.Row="15" Content="Save Changes"
                         Name="btnSaveChanges" Click="btnSaveChanges_Click"></Button>
-                <Button Grid.Column="2" Grid.Row="13" Content="Generate Installer / Update Zip"
+                <Button Grid.Column="2" Grid.Row="15" Content="Generate Installer / Update Zip"
                         HorizontalAlignment="Right"
                         Name="btnGenerateResults" Click="btnGenerateResults_Click"></Button>
             </Grid>
