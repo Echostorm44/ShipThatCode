@@ -12,7 +12,7 @@
         WindowBackdropType="Mica"
         WindowCornerPreference="Round" 
         WindowStartupLocation="CenterScreen"
-        Height="600" Width="800" WindowStyle="None" Icon="/icon.ico">
+        Height="700" Width="800" WindowStyle="None" Icon="/icon.ico">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -27,9 +27,14 @@
         <ui:TitleBar Title="Ship That Code" FontSize="16" Grid.Row="0" Grid.ColumnSpan="2" 
                      Icon="pack://application:,,,/icon.png"></ui:TitleBar>
         <Border Grid.Row="1" Padding="10">
-            <Button Content="Add New Profile" Name="btnAddNewProfile" 
-                    Click="btnAddNewProfile_Click">                
-            </Button>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Add" Name="btnAddNewProfile" 
+                        Click="btnAddNewProfile_Click" Margin="0 0 10 0">
+                </Button>
+                <Button Content="Delete" Name="btnDeleteProfile" 
+                    Click="btnDeleteProfile_Click">
+                </Button>
+            </StackPanel>
         </Border>
         <Border Grid.Row="1" Grid.Column="1" Padding="10">
             <TextBlock Text="" Name="lblStatus" Foreground="White" 
@@ -37,8 +42,7 @@
         </Border>
         <Border Grid.Row="2" Padding="10">
             <ListView ItemsSource="{Binding Profiles}" SelectedValue="{Binding ActiveProfile}" 
-                      Name="lvProfiles"
-                      SelectionChanged="ListView_SelectionChanged">
+                      Name="lvProfiles">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Margin="0,5,0,5" Text="{Binding Title}"/>
@@ -118,9 +122,18 @@
                         Name="btnGenerateResults" Click="btnGenerateResults_Click"></Button>
             </Grid>
         </Border>
-        <Border Grid.Row="3" Grid.Column="1" Padding="10">
-            <TextBlock Text="" Name="lblResults" Foreground="White" 
-                       VerticalAlignment="Center"></TextBlock>
+        <Border Grid.Row="3" Grid.Column="1" Padding="10" Height="90">
+            <ScrollViewer>
+            <TextBlock Name="lblResults" Foreground="White" Text=""
+                           VerticalAlignment="Top" TextWrapping="Wrap"></TextBlock>
+            </ScrollViewer>
         </Border>
+        <ui:Snackbar x:Name="RootSnackbar" Title="Hello World!" Grid.Row="2" Grid.ColumnSpan="2" Appearance="Secondary" 
+                     CloseButtonEnabled="False" Icon="Warning12" Grid.RowSpan="2"
+                     Message="Remember that the Heat Death of Universe is coming someday"
+                     Timeout="3000" FontSize="16" />
+        <ui:ProgressRing IsIndeterminate="True" Grid.Row="2" Grid.ColumnSpan="3" Visibility="Collapsed"
+                         Name="progRing"/>
+
     </Grid>
 </ui:UiWindow>

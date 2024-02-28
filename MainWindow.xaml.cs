@@ -20,95 +20,258 @@ public partial class MainWindow : UiWindow
 
     public MainWindow()
     {
-        vm = new MainViewModel
+        try
         {
-            SettingsPath = Path.Combine(AppContext.BaseDirectory, "profiles.json")
-        };
-        if(!File.Exists(vm.SettingsPath))
-        {
-            var sample = new DeployProfile
+            vm = new MainViewModel
             {
-                ID = 1,
-                Title = "WhatHuh CPU",
-                DefaultInstallFolderName = "WhatHuh",
-                ExeFileName = "WhatHuh.exe",
-                IconFileName = "appIcon.ico",
-                UseLauncher = true,
-                GithubOwner = "Echostorm44",
-                GithubRepo = "WhatHuh",
-                ZipName = "WhatHuhCPU.zip"
+                SettingsPath = Path.Combine(AppContext.BaseDirectory, "profiles.json")
             };
-            var sample2 = new DeployProfile
+            if(!File.Exists(vm.SettingsPath))
             {
-                ID = 2,
-                Title = "WhatHuh CUDA",
-                DefaultInstallFolderName = "WhatHuh",
-                ExeFileName = "WhatHuh.exe",
-                IconFileName = "appIcon.ico",
-                UseLauncher = true,
-                GithubOwner = "Echostorm44",
-                GithubRepo = "WhatHuh",
-                ZipName = "WhatHuhCUDA.zip"
-            };
-            List<DeployProfile> sampleList = [sample, sample2];
-            var fooo = JsonSerializer.Serialize(sampleList);
-            File.WriteAllText(vm.SettingsPath, fooo);
+                var sample = new DeployProfile
+                {
+                    ID = 1,
+                    Title = "WhatHuh CPU",
+                    DefaultInstallFolderName = "WhatHuh",
+                    ExeFileName = "WhatHuh.exe",
+                    IconFileName = "appIcon.ico",
+                    UseLauncher = true,
+                    GithubOwner = "Echostorm44",
+                    GithubRepo = "WhatHuh",
+                    ZipName = "WhatHuhCPU.zip"
+                };
+                var sample2 = new DeployProfile
+                {
+                    ID = 2,
+                    Title = "WhatHuh CUDA",
+                    DefaultInstallFolderName = "WhatHuh",
+                    ExeFileName = "WhatHuh.exe",
+                    IconFileName = "appIcon.ico",
+                    UseLauncher = true,
+                    GithubOwner = "Echostorm44",
+                    GithubRepo = "WhatHuh",
+                    ZipName = "WhatHuhCUDA.zip"
+                };
+                List<DeployProfile> sampleList = [sample, sample2];
+                var fooo = JsonSerializer.Serialize(sampleList);
+                File.WriteAllText(vm.SettingsPath, fooo);
+            }
+            var savedProfiles = JsonSerializer.Deserialize<DeployProfile[]>(File.ReadAllText(vm.SettingsPath));
+            foreach(var item in savedProfiles)
+            {
+                vm.Profiles.Add(item);
+            }
+            InitializeComponent();
+            DataContext = vm;
         }
-        var savedProfiles = JsonSerializer.Deserialize<DeployProfile[]>(File.ReadAllText(vm.SettingsPath));
-        foreach(var item in savedProfiles)
+        catch(Exception ex)
         {
-            vm.Profiles.Add(item);
+            lblResults.Text = ex.ToString();
         }
-        InitializeComponent();
-        DataContext = vm;
     }
 
     private void btnAddNewProfile_Click(object sender, RoutedEventArgs e)
     {
-        var moo = new DeployProfile() { ID = 3, Title = "New Profile" };
-        vm.Profiles.Add(moo);
-        lvProfiles.SelectedItem = moo;
-    }
-
-    private void ListView_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-    {
-        var roo = e.Source;
-        var foo = e.AddedItems;
+        try
+        {
+            var newID = vm.Profiles.Max(x => x.ID) + 1;
+            var moo = new DeployProfile() { ID = newID, Title = "New Profile" };
+            vm.Profiles.Add(moo);
+            lvProfiles.SelectedItem = moo;
+        }
+        catch(Exception ex)
+        {
+            lblResults.Text = ex.ToString();
+        }
     }
 
     private void btnLocalPubPath_Click(object sender, RoutedEventArgs e)
     {
-        var foo = new OpenFolderDialog();
-        if(foo.ShowDialog().Value)
+        try
         {
-            vm.ActiveProfile.LocalPublishPath = foo.FolderName;
+            var foo = new OpenFolderDialog();
+            if(foo.ShowDialog().Value)
+            {
+                vm.ActiveProfile.LocalPublishPath = foo.FolderName;
+            }
+        }
+        catch(Exception ex)
+        {
+            lblResults.Text = ex.ToString();
         }
     }
 
     private void btnResultsPath_Click(object sender, RoutedEventArgs e)
     {
-        var foo = new OpenFolderDialog();
-        if(foo.ShowDialog().Value)
+        try
         {
-            vm.ActiveProfile.ResultsPath = foo.FolderName;
+            var foo = new OpenFolderDialog();
+            if(foo.ShowDialog().Value)
+            {
+                vm.ActiveProfile.ResultsPath = foo.FolderName;
+            }
+        }
+        catch(Exception ex)
+        {
+            lblResults.Text = ex.ToString();
         }
     }
 
     private void btnBackDropPath_Click(object sender, RoutedEventArgs e)
     {
-        var foo = new OpenFolderDialog();
-        if(foo.ShowDialog().Value)
+        try
         {
-            vm.ActiveProfile.BackdropPath = foo.FolderName;
+            var foo = new OpenFileDialog();
+            if(foo.ShowDialog().Value && File.Exists(foo.FileName))
+            {
+                vm.ActiveProfile.BackdropPath = foo.FileName;
+            }
+        }
+        catch(Exception ex)
+        {
+            lblResults.Text = ex.ToString();
         }
     }
 
     private void btnSaveChanges_Click(object sender, RoutedEventArgs e)
     {
-        File.WriteAllText(vm.SettingsPath, JsonSerializer.Serialize(vm.Profiles));
+        SaveProfiles();
     }
 
-    // TODO add a delete button, something for the EULA, the backdrop && the icon.
+    private void SaveProfiles()
+    {
+        try
+        {
+            File.WriteAllText(vm.SettingsPath, JsonSerializer.Serialize(vm.Profiles));
+            RootSnackbar.Show("Saved!", "Settings Saved To File", Wpf.Ui.Common.SymbolRegular.Warning16);
+        }
+        catch(Exception ex)
+        {
+            lblResults.Text = ex.ToString();
+        }
+    }
+
+    private void btnDeleteProfile_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if(lvProfiles.SelectedItem == null)
+            {
+                return;
+            }
+            var profile = (DeployProfile)lvProfiles.SelectedItem;
+            vm.Profiles.Remove(profile);
+            SaveProfiles();
+        }
+        catch(Exception ex)
+        {
+            lblResults.Text = ex.ToString();
+        }
+    }
+
+    // TODO add something for the EULA.
+
+    string GenerateResults(IProgress<string> status)
+    {
+        try
+        {
+            status.Report("Copying icon, config and backdrop files");
+            var publishIconPath = Path.Combine(vm.ActiveProfile.LocalPublishPath, vm.ActiveProfile.IconFileName);
+            var installerIconPath = Path.Combine(AppContext.BaseDirectory, "InstallerFiles\\icon.ico");
+            var setupIconPath = Path.Combine(AppContext.BaseDirectory, "SetupFiles\\appIcon.ico");
+            File.Copy(publishIconPath, installerIconPath, true);
+            File.Copy(publishIconPath, setupIconPath, true);
+
+            var backdropPath = Path.Combine(AppContext.BaseDirectory, "SetupFiles\\backdrop.png");
+            File.Copy(vm.ActiveProfile.BackdropPath, backdropPath, true);
+
+            Directory.CreateDirectory(vm.ActiveProfile.ResultsPath);
+            var config = new SetupSettings
+            {
+                Title = vm.ActiveProfile.Title,
+                DefaultInstallFolderName = vm.ActiveProfile.DefaultInstallFolderName,
+                ExeFileName = vm.ActiveProfile.ExeFileName,
+                IconFileName = vm.ActiveProfile.IconFileName,
+                UseLauncher = vm.ActiveProfile.UseLauncher,
+                GithubOwner = vm.ActiveProfile.GithubOwner,
+                GithubRepo = vm.ActiveProfile.GithubRepo,
+                ZipName = vm.ActiveProfile.ZipName
+            };
+            File.WriteAllText(vm.ActiveProfile.LocalPublishPath + "\\config.json", JsonSerializer.Serialize(config));
+
+            status.Report("Copying launcher file");
+            var launcherPath = Path.Combine(AppContext.BaseDirectory, "launcher.exe");
+            var launcherDest = Path.Combine(vm.ActiveProfile.LocalPublishPath, "launcher.exe");
+            File.Copy(launcherPath, launcherDest, true);
+
+            var zipPath = Path.Combine(vm.ActiveProfile.ResultsPath, vm.ActiveProfile.ZipName);
+            File.Delete(zipPath);
+            status.Report("Creating zip file");
+            ZipFile.CreateFromDirectory(vm.ActiveProfile.LocalPublishPath, zipPath, CompressionLevel.Optimal, true);
+
+            status.Report("Copying setup files");
+            var setupFilesPath = Path.Combine(AppContext.BaseDirectory, "SetupFiles");
+            var sourceDir = new DirectoryInfo(setupFilesPath);
+            var files = sourceDir.GetFiles();
+            foreach(FileInfo file in files)
+            {
+                string targetFilePath = Path.Combine(vm.ActiveProfile.LocalPublishPath, file.Name);
+                file.CopyTo(targetFilePath, true);
+            }
+
+            var payloadZipPath = Path.Combine(AppContext.BaseDirectory, "InstallerFiles\\Payload.zip");
+            File.Delete(payloadZipPath);
+            status.Report("Creating payload zip file");
+            ZipFile.CreateFromDirectory(vm.ActiveProfile.LocalPublishPath, payloadZipPath, CompressionLevel.Optimal, true);
+
+            status.Report("Publishing installer");
+            var installerPath = Path.Combine(vm.ActiveProfile.ResultsPath, "installer.exe");
+            var installerFilesPath = Path.Combine(AppContext.BaseDirectory, "InstallerFiles");
+            var installerPublishPath = Path.Combine(AppContext.BaseDirectory, "InstallerFiles\\publishCL");
+            var installerExePath = Path.Combine(AppContext.BaseDirectory, "InstallerFiles\\publishCL\\installer.exe");
+            var publishCmd = "dotnet publish -c Release -r win-x64 -p:PublishReadyToRun=true -f net8.0 -o ./publishCL/ --sc true";
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = $"/c {publishCmd}",
+                    WorkingDirectory = installerFilesPath,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true
+                }
+            };
+            process.Start();
+            process.WaitForExit();
+
+            status.Report("Moving installer");
+            File.Move(installerExePath, installerPath);
+            status.Report("Cleaning up");
+            Directory.Delete(installerPublishPath, true);
+            File.Delete(payloadZipPath);
+
+            var procOpenWeb = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = $"https://www.github.com/{vm.ActiveProfile.GithubOwner}/{vm.ActiveProfile.GithubRepo}/releases",
+                    UseShellExecute = true,
+                    CreateNoWindow = true
+                }
+            };
+            procOpenWeb.Start();
+
+            Process.Start(Environment.GetEnvironmentVariable("WINDIR") +
+                @"\explorer.exe", vm.ActiveProfile.ResultsPath);
+            status.Report("Done");
+        }
+        catch(Exception ex)
+        {
+            return ex.ToString();
+        }
+        return "Success";
+    }
 
     private void btnGenerateResults_Click(object sender, RoutedEventArgs e)
     {
@@ -128,68 +291,18 @@ public partial class MainWindow : UiWindow
             lblStatus.Text = "Icon file does not exist or does not end with ico";
             return;
         }
-
-        var installerIconPath = Path.Combine(AppContext.BaseDirectory, "InstallerFiles\\icon.ico");
-        var setupIconPath = Path.Combine(AppContext.BaseDirectory, "SetupFiles\\appIcon.ico");
-        File.Copy(publishIconPath, installerIconPath, true);
-        File.Copy(publishIconPath, setupIconPath, true);
-
-        Directory.CreateDirectory(vm.ActiveProfile.ResultsPath);
-        var config = new SetupSettings
+        if(!File.Exists(vm.ActiveProfile.BackdropPath))
         {
-            Title = vm.ActiveProfile.Title,
-            DefaultInstallFolderName = vm.ActiveProfile.DefaultInstallFolderName,
-            ExeFileName = vm.ActiveProfile.ExeFileName,
-            IconFileName = vm.ActiveProfile.IconFileName,
-            UseLauncher = vm.ActiveProfile.UseLauncher,
-            GithubOwner = vm.ActiveProfile.GithubOwner,
-            GithubRepo = vm.ActiveProfile.GithubRepo,
-            ZipName = vm.ActiveProfile.ZipName
-        };
-        File.WriteAllText(vm.ActiveProfile.LocalPublishPath + "\\config.json", JsonSerializer.Serialize(config));
-        var launcherPath = Path.Combine(AppContext.BaseDirectory, "launcher.exe");
-        var launcherDest = Path.Combine(vm.ActiveProfile.LocalPublishPath, "launcher.exe");
-        File.Copy(launcherPath, launcherDest);
-        var zipPath = Path.Combine(vm.ActiveProfile.ResultsPath, vm.ActiveProfile.ZipName);
-        ZipFile.CreateFromDirectory(vm.ActiveProfile.LocalPublishPath, zipPath, CompressionLevel.Optimal, true);
-
-        // TODO make sure the new icon && backdrop are copied there first
-        var setupFilesPath = Path.Combine(AppContext.BaseDirectory, "SetupFiles");
-        var sourceDir = new DirectoryInfo(setupFilesPath);
-        var files = sourceDir.GetFiles();
-        foreach(FileInfo file in files)
-        {
-            string targetFilePath = Path.Combine(vm.ActiveProfile.LocalPublishPath, file.Name);
-            file.CopyTo(targetFilePath, true);
+            lblResults.Text = "Backdrop file does not exist";
+            return;
         }
-
-        var payloadZipPath = Path.Combine(AppContext.BaseDirectory, "InstallerFiles\\Payload.zip");
-        ZipFile.CreateFromDirectory(vm.ActiveProfile.LocalPublishPath, payloadZipPath, CompressionLevel.Optimal, true);
-
-        var installerPath = Path.Combine(vm.ActiveProfile.ResultsPath, "installer.exe");
-        var installerFilesPath = Path.Combine(AppContext.BaseDirectory, "InstallerFiles");
-        var installerPublishPath = Path.Combine(AppContext.BaseDirectory, "InstallerFiles\\publishCL");
-        var installerExePath = Path.Combine(AppContext.BaseDirectory, "InstallerFiles\\publishCL\\installer.exe");
-        var publishCmd = "dotnet publish -c Release -r win-x64 -p:PublishReadyToRun=true -f net8.0 -o ./publishCL/ --sc true";
-        var process = new Process
-        {
-            StartInfo = new ProcessStartInfo
-            {
-                FileName = "cmd.exe",
-                Arguments = $"/c {publishCmd}",
-                WorkingDirectory = installerFilesPath,
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                CreateNoWindow = true
-            }
-        };
-        process.Start();
-        process.WaitForExit();
-        File.Move(installerExePath, installerPath);
-        Directory.Delete(installerPublishPath, true);
-        File.Delete(payloadZipPath);
-        ////
-
+        progRing.Visibility = Visibility.Visible;
+        btnAddNewProfile.IsEnabled = false;
+        btnSaveChanges.IsEnabled = false;
+        btnLocalPubPath.IsEnabled = false;
+        btnResultsPath.IsEnabled = false;
+        btnBackDropPath.IsEnabled = false;
+        btnGenerateResults.IsEnabled = false;
         // So we need to a bunch of things here.
         // 1. Make a config.json file that contains the settings for the installer && launcher
         //    copy that into the local publish path so it gets picked up into the zip in step 3 && 4
@@ -206,6 +319,30 @@ public partial class MainWindow : UiWindow
         //    Then we can delete the publishCL folder and the Payload.zip
         // 5. We've now got both files needed to upload to the github release page, so
         //    pop open the github page for the repo release page && also open the ResultsPath folder in explorer
+        Progress<string> statusUpdate = new Progress<string>();
+        statusUpdate.ProgressChanged += (a, b) =>
+        {
+            lblStatus.Text = b;
+        };
+        IProgress<string> status = statusUpdate;
+
+        Task.Factory.StartNew(() =>
+        {
+            return GenerateResults(status);
+        }).ContinueWith(a =>
+        {
+            if(a.Result != "Success")
+            {
+                lblResults.Text = a.Result;
+            }
+            progRing.Visibility = Visibility.Collapsed;
+            btnAddNewProfile.IsEnabled = true;
+            btnSaveChanges.IsEnabled = true;
+            btnLocalPubPath.IsEnabled = true;
+            btnResultsPath.IsEnabled = true;
+            btnBackDropPath.IsEnabled = true;
+            btnGenerateResults.IsEnabled = true;
+        }, TaskScheduler.FromCurrentSynchronizationContext());
     }
 }
 
@@ -294,7 +431,21 @@ public class DeployProfile : INotifyPropertyChanged
             NotifyPropertyChanged();
         }
     }
-    public string BackdropPath { get; set; }
+    string backdropPath;
+    public string BackdropPath
+    {
+        get => backdropPath;
+        set
+        {
+            if(backdropPath == value)
+            {
+                return;
+            }
+
+            backdropPath = value;
+            NotifyPropertyChanged();
+        }
+    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
     private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
