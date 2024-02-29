@@ -29,7 +29,8 @@ for you to upload to a Github Release
 
 The install process looks like this:
 
-![devenv_PG1DVL7Cwm](https://github.com/Echostorm44/ShipThatCode/assets/107306362/5fa66ddd-8071-4081-a2a6-59fa70262c78)
+![explorer_rw6dIxvlyC](https://github.com/Echostorm44/ShipThatCode/assets/107306362/9cbc45e1-5eb7-4a85-9c9d-1168a91c1574)
+
 
 
 
