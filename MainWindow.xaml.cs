@@ -207,7 +207,7 @@ public partial class MainWindow : UiWindow
             var zipPath = Path.Combine(vm.ActiveProfile.ResultsPath, vm.ActiveProfile.ZipName);
             File.Delete(zipPath);
             status.Report("Creating zip file");
-            ZipFile.CreateFromDirectory(vm.ActiveProfile.LocalPublishPath, zipPath, CompressionLevel.Optimal, true);
+            ZipFile.CreateFromDirectory(vm.ActiveProfile.LocalPublishPath, zipPath, CompressionLevel.Optimal, false);
 
             status.Report("Copying setup files");
             var setupFilesPath = Path.Combine(AppContext.BaseDirectory, "SetupFiles");
@@ -222,7 +222,7 @@ public partial class MainWindow : UiWindow
             var payloadZipPath = Path.Combine(AppContext.BaseDirectory, "InstallerFiles\\Payload.zip");
             File.Delete(payloadZipPath);
             status.Report("Creating payload zip file");
-            ZipFile.CreateFromDirectory(vm.ActiveProfile.LocalPublishPath, payloadZipPath, CompressionLevel.Optimal, true);
+            ZipFile.CreateFromDirectory(vm.ActiveProfile.LocalPublishPath, payloadZipPath, CompressionLevel.Optimal, false);
 
             status.Report("Publishing installer");
             var installerPath = Path.Combine(vm.ActiveProfile.ResultsPath, "installer.exe");
@@ -246,7 +246,7 @@ public partial class MainWindow : UiWindow
             process.WaitForExit();
 
             status.Report("Moving installer");
-            File.Move(installerExePath, installerPath);
+            File.Move(installerExePath, installerPath, true);
             status.Report("Cleaning up");
             Directory.Delete(installerPublishPath, true);
             File.Delete(payloadZipPath);
