@@ -31,6 +31,15 @@ The install process looks like this:
 
 ![explorer_rw6dIxvlyC](https://github.com/Echostorm44/ShipThatCode/assets/107306362/9cbc45e1-5eb7-4a85-9c9d-1168a91c1574)
 
+It uses the icon you pointed out during setup to create a nice branded shortcut on the desktop that points to the launcher file that checks for updates before launching your exe
+
+![image](https://github.com/Echostorm44/ShipThatCode/assets/107306362/3e9b6c48-2f99-4241-8e14-308b1c0509ce)
+
+The EULA.txt file it uses is in the SetupFiles folder, you can just paste your custom EULA in there or use the default.
+
+I hope that this helps other devs with their projects and allows them to focus on writing cool apps instad of spending ages making installers and updaters. 
+
+
 
 
 
