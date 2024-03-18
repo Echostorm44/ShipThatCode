@@ -32,6 +32,7 @@ The install process looks like this:
 ![explorer_rw6dIxvlyC](https://github.com/Echostorm44/ShipThatCode/assets/107306362/9cbc45e1-5eb7-4a85-9c9d-1168a91c1574)
 
 It uses the icon you pointed out during setup to create a nice branded shortcut on the desktop that points to the launcher file that checks for updates before launching your exe
+The launcher will delete all the files previously installed except any in the config.json in the semicolon delmited string property DoNotDeleteTheseFiles
 
 ![image](https://github.com/Echostorm44/ShipThatCode/assets/107306362/3e9b6c48-2f99-4241-8e14-308b1c0509ce)
 
