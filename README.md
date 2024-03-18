@@ -1,7 +1,7 @@
 # ShipThatCode
  A simple utility to create an installer and updater for .net projects without code changes using Github to host updates.
 
-![image](https://github.com/Echostorm44/ShipThatCode/assets/107306362/67cfa31c-a18e-4547-a881-12265585bd45)
+![image](https://github.com/Echostorm44/ShipThatCode/assets/107306362/949b09ca-1f17-4148-9a36-bb9766e8290a)
 
 ShipThatCode is my version of ClickOnce.  It is crazy to me that all the options for creating installers for and keeping windows programs up to date are such a convoluted time consuming mess that are sometimes more work than the product itself.
 
