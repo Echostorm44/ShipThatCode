@@ -38,7 +38,8 @@ public partial class MainWindow : UiWindow
                     UseLauncher = true,
                     GithubOwner = "Echostorm44",
                     GithubRepo = "WhatHuh",
-                    ZipName = "WhatHuhCPU.zip"
+                    ZipName = "WhatHuhCPU.zip",
+                    DoNotDeleteTheseFiles = "ExampleConfig.json;ExampleDB.db"
                 };
                 var sample2 = new DeployProfile
                 {
@@ -50,7 +51,8 @@ public partial class MainWindow : UiWindow
                     UseLauncher = true,
                     GithubOwner = "Echostorm44",
                     GithubRepo = "WhatHuh",
-                    ZipName = "WhatHuhCUDA.zip"
+                    ZipName = "WhatHuhCUDA.zip",
+                    DoNotDeleteTheseFiles = "ExampleConfig.json;ExampleDB.db"
                 };
                 List<DeployProfile> sampleList = [sample, sample2];
                 var fooo = JsonSerializer.Serialize(sampleList);
@@ -195,7 +197,8 @@ public partial class MainWindow : UiWindow
                 UseLauncher = vm.ActiveProfile.UseLauncher,
                 GithubOwner = vm.ActiveProfile.GithubOwner,
                 GithubRepo = vm.ActiveProfile.GithubRepo,
-                ZipName = vm.ActiveProfile.ZipName
+                ZipName = vm.ActiveProfile.ZipName,
+                DoNotDeleteTheseFiles = vm.ActiveProfile.DoNotDeleteTheseFiles
             };
             File.WriteAllText(vm.ActiveProfile.LocalPublishPath + "\\config.json", JsonSerializer.Serialize(config));
 
@@ -401,6 +404,8 @@ public class DeployProfile : INotifyPropertyChanged
     public string GithubOwner { get; set; }
     public string GithubRepo { get; set; }
     public string ZipName { get; set; }
+    public string DoNotDeleteTheseFiles { get; set; }
+
     string localPublishPath;
     public string LocalPublishPath
     {
@@ -464,4 +469,5 @@ public class SetupSettings
     public string GithubOwner { get; set; }
     public string GithubRepo { get; set; }
     public string ZipName { get; set; }
+    public string DoNotDeleteTheseFiles { get; set; }
 }

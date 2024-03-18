@@ -12,7 +12,7 @@
         WindowBackdropType="Mica"
         WindowCornerPreference="Round" 
         WindowStartupLocation="CenterScreen"
-        Height="700" Width="800" WindowStyle="None" Icon="/icon.ico">
+        Height="750" Width="800" WindowStyle="None" Icon="/icon.ico">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -53,6 +53,9 @@
         <Border Grid.Row="2" Grid.Column="1" Padding="10">
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
@@ -115,9 +118,14 @@
                         Click="btnResultsPath_Click"></Button>
                 <Button Grid.Column="2" Grid.Row="13" Content="Browse" Name="btnBackDropPath"
                         Click="btnBackDropPath_Click"></Button>
-                <Button Grid.Column="0" Grid.Row="15" Content="Save Changes"
+                <Label Grid.Row="15" Grid.Column="0" Grid.ColumnSpan="4" 
+                       Content="Do Not Delete These Files (semicolon delimited eg settings.ini;userData.db;custom.json)"></Label>
+                <TextBox Grid.Row="16" Grid.Column="0" Name="txtDoNoDeleteThesefiles" 
+                         Grid.ColumnSpan="3" Padding="10"
+                        Text="{Binding ActiveProfile.DoNotDeleteTheseFiles, Mode=TwoWay}"></TextBox>
+                <Button Grid.Column="0" Grid.Row="18" Content="Save Changes"
                         Name="btnSaveChanges" Click="btnSaveChanges_Click"></Button>
-                <Button Grid.Column="2" Grid.Row="15" Content="Generate Installer / Update Zip"
+                <Button Grid.Column="2" Grid.Row="18" Content="Generate Installer / Update Zip"
                         HorizontalAlignment="Right"
                         Name="btnGenerateResults" Click="btnGenerateResults_Click"></Button>
             </Grid>
